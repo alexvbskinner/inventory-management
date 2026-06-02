@@ -6,6 +6,7 @@ export default {
     orders: '注文',
     finance: '財務',
     demandForecast: '需要予測',
+    restocking: '補充',
     companyName: '触媒コンポーネンツ',
     subtitle: '在庫管理システム'
   },
@@ -112,6 +113,8 @@ export default {
     onTimeDelivery: '定時配達',
     itemsCount: '{count}件',
     quantity: '数量',
+    submittedOrders: '送信済み注文',
+    noSubmittedOrders: '補充注文はまだ送信されていません。',
     table: {
       orderNumber: '注文番号',
       orderId: '注文ID',
@@ -124,6 +127,8 @@ export default {
       value: '価格',
       totalValue: '合計金額',
       status: 'ステータス',
+      submittedDate: '送信日',
+      leadTime: 'リードタイム',
       expectedDelivery: '予定配達日',
       actualDelivery: '実際の配達日'
     }
@@ -185,6 +190,34 @@ export default {
       change: '変化',
       trend: 'トレンド',
       period: '期間'
+    }
+  },
+
+  // Restocking
+  restocking: {
+    title: '補充',
+    description: '予算を設定し、需要予測に基づいて推奨品目を発注します',
+    budgetTitle: '利用可能な予算',
+    budgetHint: 'スライダーで補充に使える金額を設定します',
+    recommendationsTitle: '推奨補充',
+    recommendationsHint: '需要ギャップが最も大きい品目を、予算に収まるよう優先表示します',
+    noRecommendations: 'この予算で補充できる品目はありません。予算を増やすと推奨が表示されます。',
+    allocated: '割当額',
+    remaining: '残額',
+    itemsRecommended: '{count}件を推奨',
+    placeOrder: '発注する',
+    placing: '発注中...',
+    orderSuccess: '補充注文{orderNumber}を送信しました。配達予定は{days}日後です。',
+    orderError: '補充注文の送信に失敗しました。もう一度お試しください。',
+    leadTimeDays: '{days}日',
+    table: {
+      sku: 'SKU',
+      itemName: '品目名',
+      demandGap: '需要ギャップ',
+      quantity: '発注数量',
+      unitCost: '単価',
+      lineTotal: '小計',
+      leadTime: 'リードタイム'
     }
   },
 

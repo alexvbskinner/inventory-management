@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
 from pydantic import BaseModel
+from datetime import datetime, timedelta
 from mock_data import inventory_items, orders, demand_forecasts, backlog_items, spending_summary, monthly_spending, category_spending, recent_transactions, purchase_orders
 
 app = FastAPI(title="Factory Inventory Management System")
@@ -89,6 +90,8 @@ class DemandForecast(BaseModel):
     forecasted_demand: int
     trend: str
     period: str
+    unit_cost: float
+    lead_time_days: int
 
 class BacklogItem(BaseModel):
     id: str
@@ -119,6 +122,34 @@ class CreatePurchaseOrderRequest(BaseModel):
     unit_cost: float
     expected_delivery_date: str
     notes: Optional[str] = None
+
+class RestockingOrderItem(BaseModel):
+    sku: str
+    name: str
+    quantity: int
+    unit_cost: float
+    line_total: float
+    lead_time_days: int
+
+class CreateRestockingOrderRequest(BaseModel):
+    budget: float
+    items: List[RestockingOrderItem]
+    total_value: float
+
+class SubmittedOrder(BaseModel):
+    id: str
+    order_number: str
+    status: str
+    submitted_date: str
+    budget: float
+    total_value: float
+    lead_time_days: int
+    expected_delivery: str
+    items: List[RestockingOrderItem]
+
+# Runtime store for restocking orders submitted from the Restocking tab.
+# In-memory only (consistent with the rest of the demo) — resets on server restart.
+submitted_orders: List[dict] = []
 
 # API endpoints
 @app.get("/")
@@ -178,6 +209,40 @@ def get_backlog():
         item_dict["has_purchase_order"] = has_po
         result.append(item_dict)
     return result
+
+@app.get("/api/restocking-orders", response_model=List[SubmittedOrder])
+def get_restocking_orders():
+    """Get all restocking orders submitted from the Restocking tab."""
+    return submitted_orders
+
+@app.post("/api/restocking-orders", response_model=SubmittedOrder)
+def create_restocking_order(request: CreateRestockingOrderRequest):
+    """Submit a restocking order built from demand-forecast recommendations."""
+    if not request.items:
+        raise HTTPException(status_code=400, detail="Cannot submit an order with no items")
+
+    # Sequence the order number from the count of orders submitted this session.
+    sequence = len(submitted_orders) + 1
+    submitted_at = datetime.now()
+
+    # The order isn't fully delivered until its slowest item arrives, so the
+    # order-level lead time is the max of the per-item supplier lead times.
+    lead_time_days = max(item.lead_time_days for item in request.items)
+    expected_delivery = submitted_at + timedelta(days=lead_time_days)
+
+    order = {
+        "id": f"RO-{sequence:04d}",
+        "order_number": f"RO-{submitted_at.year}-{sequence:04d}",
+        "status": "Submitted",
+        "submitted_date": submitted_at.strftime("%Y-%m-%d"),
+        "budget": request.budget,
+        "total_value": request.total_value,
+        "lead_time_days": lead_time_days,
+        "expected_delivery": expected_delivery.strftime("%Y-%m-%d"),
+        "items": [item.model_dump() for item in request.items],
+    }
+    submitted_orders.append(order)
+    return order
 
 @app.get("/api/dashboard/summary")
 def get_dashboard_summary(

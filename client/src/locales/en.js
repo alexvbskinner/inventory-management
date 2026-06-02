@@ -6,6 +6,7 @@ export default {
     orders: 'Orders',
     finance: 'Finance',
     demandForecast: 'Demand Forecast',
+    restocking: 'Restocking',
     companyName: 'Catalyst Components',
     subtitle: 'Inventory Management System'
   },
@@ -112,6 +113,8 @@ export default {
     onTimeDelivery: 'On-Time Delivery',
     itemsCount: '{count} items',
     quantity: 'Qty',
+    submittedOrders: 'Submitted Orders',
+    noSubmittedOrders: 'No restocking orders submitted yet.',
     table: {
       orderNumber: 'Order Number',
       orderId: 'Order ID',
@@ -124,6 +127,8 @@ export default {
       value: 'Value',
       totalValue: 'Total Value',
       status: 'Status',
+      submittedDate: 'Submitted Date',
+      leadTime: 'Lead Time',
       expectedDelivery: 'Expected Delivery',
       actualDelivery: 'Actual Delivery'
     }
@@ -185,6 +190,34 @@ export default {
       change: 'Change',
       trend: 'Trend',
       period: 'Period'
+    }
+  },
+
+  // Restocking
+  restocking: {
+    title: 'Restocking',
+    description: 'Set your budget and order recommended items based on demand forecasts',
+    budgetTitle: 'Available Budget',
+    budgetHint: 'Drag to set how much you can spend on restocking',
+    recommendationsTitle: 'Recommended Restock',
+    recommendationsHint: 'Items with the largest demand gaps, prioritized to fit your budget',
+    noRecommendations: 'No items can be restocked within this budget. Increase the budget to see recommendations.',
+    allocated: 'Allocated',
+    remaining: 'Remaining',
+    itemsRecommended: '{count} items recommended',
+    placeOrder: 'Place Order',
+    placing: 'Placing order...',
+    orderSuccess: 'Restocking order {orderNumber} submitted. Expected delivery in {days} days.',
+    orderError: 'Failed to submit restocking order. Please try again.',
+    leadTimeDays: '{days} days',
+    table: {
+      sku: 'SKU',
+      itemName: 'Item Name',
+      demandGap: 'Demand Gap',
+      quantity: 'Order Qty',
+      unitCost: 'Unit Cost',
+      lineTotal: 'Line Total',
+      leadTime: 'Lead Time'
     }
   },
 
